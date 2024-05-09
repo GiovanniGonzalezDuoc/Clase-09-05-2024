@@ -1,38 +1,4 @@
-import { getPersonajes } from "./Peticiones/getPersonajes.js";
-
-
-const enviarDatos = (id ,name , image , species , status)=> {
-
-    const rutaArchivoHTML = "../personaje.html";
-    fetch(rutaArchivoHTML)
-        .then(response => response.text())
-        .then((html)=>{
-
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html,"text/html");
-
-            const imagePage = doc.getElementById("imagePage");
-            imagePage.src = image;
-
-            const namePage = doc.getElementById("namePage");
-            namePage.textContent = `Nombre : ${name}`;
-
-            const speciesPage = doc.getElementById("speciesPage");
-            speciesPage.textContent = `Especie : ${species}`;
-
-            const statusPage = doc.getElementById("statusPage");
-            statusPage.textContent = `Estado: ${status}`;
-
-            const nuevoHtml = new XMLSerializer().serializeToString(doc);
-
-            document.body.innerHTML = nuevoHtml;
-
-        })
-        .catch((error)=>{
-            console.log(`El error es: ${error}`);
-        })
-}
-const crearCard = (results = []) =>{
+export const crearCard = (results = []) =>{
     let personajesRow = document.getElementById("personajesRow");
     results.map((result)=>{
         const {id ,name , image , species , status , location} = result;
@@ -74,10 +40,8 @@ const crearCard = (results = []) =>{
         const btnVer = document.createElement("button");
         btnVer.classList.add("btn","btn-success");
         btnVer.textContent = "Ver Detalles";
-        btnVer.addEventListener("click", ()=>{
-            enviarDatos(id,name,image,species,status);
-        })
-
+        btnVer.addEventListener("click", ()=>
+            enviarDatos);
 
         divBody.appendChild(title);
         divBody.appendChild(subTitle);
@@ -92,7 +56,3 @@ const crearCard = (results = []) =>{
         personajesRow.appendChild(divCol);
     });
 }
-
-getPersonajes()
-    .then( data => crearCard(data))
-    .catch( error=> console.log(`El error es: ${error}`))
